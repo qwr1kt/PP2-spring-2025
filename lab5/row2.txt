@@ -1,0 +1,7 @@
+Alice met Bob at the park. They decided to play a game. 
+a ab abb abbb aac abc acb a123b abcabcab 
+hello_world test_case snake_case_example 
+CamelCase MixedCase UPPERcase lowerCase 
+HelloWorld PythonProgramming 
+Hello, world. How are you? This is an example text. 
+this_is_snake_case convert_this_string 
