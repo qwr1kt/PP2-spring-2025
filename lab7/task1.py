@@ -18,16 +18,14 @@ while not done:
         if event.type == pygame.QUIT:
             done = True
 
-    # Получаем текущее время
     current_time = time.localtime()
-    minute = current_time.tm_min  # Минуты
-    second = current_time.tm_sec  # Секунды
+    minute = current_time.tm_min  
+    second = current_time.tm_sec  
 
     # углы поворота для стрелок:
     second_angle = -second * 6  # 360° / 60 секунд = 6° за каждую секунду
 
-    # Минутная стрелка (плюс 10 минут)
-    minute_shift = 8  # Смещение на 10 минут вперед
+    minute_shift = 8  
     minute_angle = -(minute + minute_shift) * 6 - (second / 60) * 6  # 360° / 60 минут = 6° за каждую минуту
 
     screen.blit(mainclock, (0, 0))

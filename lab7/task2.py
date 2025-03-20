@@ -11,105 +11,105 @@ for song in allmusic:
     if song.endswith(".mp3"):
         playlist.append(os.path.join(music_folder, song))
 
-screen = pygame.display.set_mode((2500*0.5 , 1407*0.5))  # Устанавливаем размер окна
-pygame.display.set_caption("Music Player")  # Устанавливаем заголовок окна
+screen = pygame.display.set_mode((int(2500*0.5) , int(1407*0.5)))  
+pygame.display.set_caption("Music Player")  
 clock = pygame.time.Clock() 
 
 background = pygame.image.load(os.path.join("music-elements", "background.png"))
-background = pygame.transform.scale(background, (2500*0.5 , 1407*0.5))  # Изменяем размер фона
+background = pygame.transform.scale(background, (int(2500*0.5) , int(1407*0.5)))  
 
-# Создаем фон для кнопок, с размерами и белым цветом
-bg = pygame.Surface((500, 200), pygame.SRCALPHA)
-# Шрифт для отображения названия текущей песни
-font2 = pygame.font.SysFont(None, 20)
+#текущий трек 
+font2 = pygame.font.SysFont("Roboto", 30, bold=True)
 
-# Загружаем изображения кнопок
-playb = pygame.image.load(os.path.join("music-elements", "play.png"))
-pausb = pygame.image.load(os.path.join("music-elements", "pause.png"))
-nextb = pygame.image.load(os.path.join("music-elements", "next.png"))
-prevb = pygame.image.load(os.path.join("music-elements", "back.png"))
+# изображения кнопок
+playb = pygame.image.load(os.path.join("music-elements", "play.png")).convert_alpha()
+pausb = pygame.image.load(os.path.join("music-elements", "pause.png")).convert_alpha()
+nextb = pygame.image.load(os.path.join("music-elements", "next.png")).convert_alpha()
+prevb = pygame.image.load(os.path.join("music-elements", "back.png")).convert_alpha()
 
-index = 0  # Индекс текущей песни в плейлисте
-aplay = False  # Флаг, указывающий, проигрывается ли музыка в данный момент
-
-# Загружаем и начинаем воспроизведение первой песни из плейлиста
+# индекс для номера песни
+index = 0  
 pygame.mixer.music.load(playlist[index])  
-pygame.mixer.music.play(1)  # Воспроизводим один раз
-aplay = True  # Устанавливаем флаг, что музыка играет
+pygame.mixer.music.play(1)  
+aplay = True 
 
-run = True  # Основной цикл программы
+run = True 
 while run:
-    for event in pygame.event.get():  # Обрабатываем события
-        if event.type == pygame.QUIT:  # Если окно закрыто
-            run = False  # Прерываем цикл
-            pygame.quit()  # Завершаем Pygame
-            exit()  # Выходим из программы
-        elif event.type == pygame.KEYDOWN:  # Если нажата клавиша
-            if event.key == pygame.K_SPACE:  # Если нажали пробел
-                if aplay:  # Если музыка играет
-                    aplay = False  # Ставим флаг в False, приостанавливаем музыку
+    for event in pygame.event.get():  
+        if event.type == pygame.QUIT:  
+            run = False  
+            pygame.quit() 
+            exit()  
+        elif event.type == pygame.KEYDOWN:  
+            if event.key == pygame.K_SPACE:  
+                if aplay: 
+                    aplay = False  
                     pygame.mixer.music.pause()
-                else:  # Если музыка приостановлена
-                    aplay = True  # Возобновляем воспроизведение
+                else:  
+                    aplay = True  
                     pygame.mixer.music.unpause()
 
-            if event.key == pygame.K_RIGHT:  # Если нажали стрелку вправо
-                index = (index + 1) % len(playlist)  # Переходим к следующей песне в плейлисте
-                pygame.mixer.music.load(playlist[index])  # Загружаем новую песню
-                pygame.mixer.music.play()  # Начинаем воспроизведение
+            if event.key == pygame.K_RIGHT:  
+                index = (index + 1) % len(playlist) 
+                pygame.mixer.music.load(playlist[index])  
+                pygame.mixer.music.play()  
 
-            if event.key == pygame.K_LEFT:  # Если нажали стрелку влево
-                index = (index - 1) % len(playlist)  # Переходим к предыдущей песне в плейлисте
-                pygame.mixer.music.load(playlist[index])  # Загружаем новую песню
-                pygame.mixer.music.play()  # Начинаем воспроизведение
+            if event.key == pygame.K_LEFT:  
+                index = (index - 1) % len(playlist)  
+                pygame.mixer.music.load(playlist[index])  
+                pygame.mixer.music.play() 
 
-        # Проверка на нажатие кнопок (play/pause, next, prev)
+        # управление мышкой 
         mouse_x, mouse_y = pygame.mouse.get_pos()
         mouse_click = pygame.mouse.get_pressed()
+        playb_rect = playb.get_rect(topleft=(2500*0.23 - 10, 1407*0.19))
+        pausb_rect = pausb.get_rect(topleft=(2500*0.23 - 10, 1407*0.19))
+        nextb_rect = nextb.get_rect(topleft=(2500*0.23 + 200, 1407*0.19 + 8))
+        prevb_rect = prevb.get_rect(topleft=(2500*0.23 - 200, 1407*0.19 + 8))
 
-        if playb.get_rect(topleft=(370, 590)).collidepoint(mouse_x, mouse_y) and mouse_click[0]:
-            if aplay:  # Если музыка играет
+        playb_rect = playb_rect.inflate(20, 20)
+        pausb_rect = pausb_rect.inflate(20, 20)
+        nextb_rect = nextb_rect.inflate(20, 20)
+        prevb_rect = prevb_rect.inflate(20, 20)
+
+        if playb_rect.collidepoint(mouse_x, mouse_y) and mouse_click[0]:
+            if aplay:
                 aplay = False
                 pygame.mixer.music.pause()
-            else:  # Если музыка на паузе
+            else:
                 aplay = True
                 pygame.mixer.music.unpause()
 
-        if nextb.get_rect(topleft=(460, 587)).collidepoint(mouse_x, mouse_y) and mouse_click[0]:
+        if nextb_rect.collidepoint(mouse_x, mouse_y) and mouse_click[0]:
             index = (index + 1) % len(playlist)
             pygame.mixer.music.load(playlist[index])
             pygame.mixer.music.play()
 
-        if prevb.get_rect(topleft=(273, 585)).collidepoint(mouse_x, mouse_y) and mouse_click[0]:
+        if prevb_rect.collidepoint(mouse_x, mouse_y) and mouse_click[0]:
             index = (index - 1) % len(playlist)
             pygame.mixer.music.load(playlist[index])
             pygame.mixer.music.play()
 
-    # Отображаем название текущей песни на экране
-    text2 = font2.render(os.path.basename(playlist[index]), True, (20, 20, 50))
-    
-    # Отображаем фоновое изображение и другие элементы на экране
-    screen.blit(background, (0, 0))  # Фон
-    screen.blit(bg, (155, 500))  # Фон для кнопок
-    screen.blit(text2, (365, 520))  # Название текущей песни
+       
+    text2 = font2.render(os.path.basename(playlist[index]), True, (225, 225, 225))
 
-    # Масштабируем кнопки
-    playb = pygame.transform.scale(playb, (70, 70))  # Масштабируем кнопку "Play"
-    pausb = pygame.transform.scale(pausb, (70, 70))  # Масштабируем кнопку "Pause"
-    
-    # Если музыка играет, показываем кнопку паузы, иначе кнопку воспроизведения
+    screen.blit(background, (0, 0))  
+    screen.blit(text2, (2500*0.23-96, 108))
+
+    #кнопки
+    playb = pygame.transform.scale(playb, (123, 123))  
+    pausb = pygame.transform.scale(pausb, (123, 123))  
+
     if aplay:
-        screen.blit(pausb, (370, 590))
+        screen.blit(pausb, (2500*0.23-10, 1407*0.19))
     else: 
-        screen.blit(playb, (370, 590))
+        screen.blit(playb, (2500*0.23-10, 1407*0.19))
     
-    nextb = pygame.transform.scale(nextb, (70, 70))  # Масштабируем кнопку "Next"
-    screen.blit(nextb, (460, 587))  # Размещаем кнопку "Next"
+    nextb = pygame.transform.scale(nextb, (100, 100))  
+    screen.blit(nextb, (2500*0.23 + 200, 1407*0.19+8))  
     
-    prevb = pygame.transform.scale(prevb, (75, 75))  # Масштабируем кнопку "Prev"
-    screen.blit(prevb, (273, 585))  # Размещаем кнопку "Prev"
+    prevb = pygame.transform.scale(prevb, (100, 100))  
+    screen.blit(prevb, (2500*0.23 - 200, 1407*0.19+8)) 
 
-
-
-    clock.tick(24)  # Обновляем экран 24 раза в секунду
-    pygame.display.update()  # Обновляем отображение на экране 
+    clock.tick(60)
+    pygame.display.update() 
